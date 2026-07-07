@@ -87,14 +87,14 @@ def fetch_pypi_downloads():
         resp = requests.get(url, timeout=30)
         if resp.status_code != 200:
             print(f"  WARNING: pypistats returned {resp.status_code} for '{package}': {resp.text[:200]}")
+            time.sleep(2)
             continue
         data = resp.json().get("data", [])
-        # Sum the last 7 days of "without_mirrors" downloads as a weekly figure
         recent = sorted(data, key=lambda d: d["date"])[-7:]
         weekly_total = sum(d["downloads"] for d in recent if d.get("category") == "without_mirrors") or \
             sum(d["downloads"] for d in recent)
         append_row("pypi", f"weekly_downloads_{package}", weekly_total)
-
+        time.sleep(2)
 
 # ---------------------------------------------------------------------------
 # 3. Google Trends - search interest per term (unofficial API via pytrends)
