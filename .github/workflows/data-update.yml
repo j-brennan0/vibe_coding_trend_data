@@ -27,6 +27,7 @@ jobs:
       - name: Run data collection script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STACK_APPS_KEY: ${{ secrets.STACK_APPS_KEY }}  # optional - leave the repo secret unset if you don't have one
         run: python scripts/fetch_trends.py
 
       - name: Commit and push updated data
