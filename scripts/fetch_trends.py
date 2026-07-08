@@ -28,9 +28,9 @@ import requests
 # CONFIG - edit these to change what gets tracked
 # ---------------------------------------------------------------------------
 
-GITHUB_TOPICS = ["vibe-coding"]
-STACKOVERFLOW_TAGS = ["vibe-coding"]  # add more Stack Overflow tags here
-TRENDS_TERMS = ["vibe coding"]
+GITHUB_TOPICS = ["vibe-coding", "github-copilot", "claude-code", "codex", "cursor-ide"]
+STACKOVERFLOW_TAGS = ["vibe-coding", "github-copilot", "chatgpt", "claude-code", "codex", "cursor-ide"]
+TRENDS_TERMS = ["vibe coding", "github copilot", "claude code", "chatgpt codex", "cursor ai"]
 
 CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "vibecoding_trends.csv")
 CSV_HEADERS = ["date", "source", "metric", "value"]
