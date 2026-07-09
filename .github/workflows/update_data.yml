@@ -27,6 +27,7 @@ jobs:
       - name: Run data collection script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRENDS_MCP_API_KEY: ${{ secrets.TRENDS_MCP_API_KEY }}
         run: python scripts/fetch_trends.py
 
       - name: Commit and push updated data
