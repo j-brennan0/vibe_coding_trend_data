@@ -30,6 +30,7 @@ Configuration lives in the CONFIG block below.
 
 import csv
 import datetime
+import json
 import os
 import sys
 import time
@@ -168,12 +169,24 @@ def fetch_google_trends():
             time.sleep(2)
             continue
 
-        # Response shape is inferred from partial vendor documentation (this
-        # is a third-party service, not an Anthropic or Google product) - if
-        # this breaks, check trendsmcp.ai/docs for the current exact schema
-        # and adjust the parsing below accordingly.
+        # Response is wrapped Lambda-proxy-style: {"statusCode": 200, "body": "<json string>"}
+        # rather than returning the array directly - the actual data is a JSON
+        # string inside "body" and needs a second parse. Confirmed against a
+        # real response on 2026-07-09; if this changes again, check
+        # trendsmcp.ai/docs for the current exact schema.
         payload = resp.json()
-        series = payload.get("data") or payload.get("results") or payload.get("series") or payload
+        if isinstance(payload, dict) and isinstance(payload.get("body"), str):
+            try:
+                series = json.loads(payload["body"])
+            except (json.JSONDecodeError, TypeError) as e:
+                print(f"  WARNING: could not parse Trends MCP 'body' field for '{term}': {e}")
+                time.sleep(2)
+                continue
+        elif isinstance(payload, dict):
+            series = payload.get("data") or payload.get("results") or payload.get("series")
+        else:
+            series = payload
+
         if not series or not isinstance(series, list):
             print(f"  WARNING: unexpected Trends MCP response shape for '{term}': {str(payload)[:200]}")
             time.sleep(2)
